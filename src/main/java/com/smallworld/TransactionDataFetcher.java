@@ -5,6 +5,7 @@ import com.smallworld.domain.Transaction;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
@@ -80,8 +81,9 @@ public class TransactionDataFetcher {
     /**
      * Returns all transactions indexed by beneficiary name
      */
-    public Map<String, Object> getTransactionsByBeneficiaryName() {
-        throw new UnsupportedOperationException();
+    public Map<String, List<Transaction>> getTransactionsByBeneficiaryName() {
+        return this.getUniques()
+                .collect(Collectors.groupingBy(Transaction::getBeneficiaryFullName));
     }
 
     /**

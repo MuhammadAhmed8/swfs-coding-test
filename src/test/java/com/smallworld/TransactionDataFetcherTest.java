@@ -7,7 +7,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -155,6 +157,32 @@ class TransactionDataFetcherTest {
 
         boolean hasOpenIssues = dataFetcher.hasOpenComplianceIssues("Client A");
         assertFalse(hasOpenIssues);
+    }
+
+    @Test
+    public void testGetTransactionsByBeneficiaryName_NoTransactions_ReturnsEmptyMap() {
+        List<Transaction> mockTransactions = new ArrayList<>();
+        when(mockReader.Data()).thenReturn(mockTransactions);
+
+        Map<String, List<Transaction>> transactionsByBeneficiary = dataFetcher.getTransactionsByBeneficiaryName();
+        assertTrue(transactionsByBeneficiary.isEmpty());
+    }
+
+    @Test
+    public void testGetTransactionsByBeneficiaryName_HasTransactions_ReturnsMap() {
+        List<Transaction> mockTransactions = new ArrayList<>();
+        mockTransactions.add(new Transaction(1, 100.0, "Sender A", 30, "Receiver X", 25, null, false, null));
+        mockTransactions.add(new Transaction(2, 200.0, "Sender B", 28, "Receiver X", 27, null, false, null));
+        mockTransactions.add(new Transaction(3, 300.0, "Sender A", 35, "Receiver Y", 40, null, false, null));
+        when(mockReader.Data()).thenReturn(mockTransactions);
+
+        Map<String, List<Transaction>> transactionsByBeneficiary = dataFetcher.getTransactionsByBeneficiaryName();
+
+        Map<String, List<Transaction>> expectedTransactions = new HashMap<>();
+        expectedTransactions.put("Receiver X", mockTransactions.subList(0, 2));
+        expectedTransactions.put("Receiver Y", mockTransactions.subList(2, 3));
+
+        assertEquals(expectedTransactions, transactionsByBeneficiary);
     }
 
 }
