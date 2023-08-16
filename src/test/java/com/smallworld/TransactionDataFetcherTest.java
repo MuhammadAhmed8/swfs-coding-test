@@ -232,4 +232,29 @@ class TransactionDataFetcherTest {
         assertEquals(expectedMessages, solvedIssueMessages);
     }
 
+    @Test
+    public void testGetTop3TransactionsByAmount_NoTransactions_ReturnsEmptyList() {
+        List<Transaction> mockTransactions = new ArrayList<>();
+        when(mockReader.Data()).thenReturn(mockTransactions);
+
+        List<Transaction> top3Transactions = dataFetcher.getTop3TransactionsByAmount();
+        assertTrue(top3Transactions.isEmpty());
+    }
+
+    @Test
+    public void testGetTop3TransactionsByAmount_HasTransactions_ReturnsList() {
+        List<Transaction> mockTransactions = new ArrayList<>();
+        mockTransactions.add(new Transaction(1, 100.0, "Sender A", 30, "Receiver X", 25, null, false, null));
+        mockTransactions.add(new Transaction(2, 200.0, "Sender B", 28, "Receiver X", 27, null, false, null));
+        mockTransactions.add(new Transaction(3, 300.0, "Sender A", 35, "Receiver Y", 40, null, false, null));
+        mockTransactions.add(new Transaction(4, 400.0, "Sender C", 45, "Receiver Z", 50, null, false, null));
+        when(mockReader.Data()).thenReturn(mockTransactions);
+
+        List<Transaction> top3Transactions = dataFetcher.getTop3TransactionsByAmount();
+        assertEquals(3, top3Transactions.size());
+        assertEquals(400.0, top3Transactions.get(0).getAmount(), 0.001);
+        assertEquals(300.0, top3Transactions.get(1).getAmount(), 0.001);
+        assertEquals(200.0, top3Transactions.get(2).getAmount(), 0.001);
+    }
+
 }

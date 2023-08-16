@@ -108,8 +108,11 @@ public class TransactionDataFetcher {
     /**
      * Returns the 3 transactions with highest amount sorted by amount descending
      */
-    public List<Object> getTop3TransactionsByAmount() {
-        throw new UnsupportedOperationException();
+    public List<Transaction> getTop3TransactionsByAmount() {
+        return this.reader.Data().stream()
+                .sorted(Comparator.comparingDouble(Transaction::getAmount).reversed())
+                .limit(3)
+                .collect(Collectors.toList());
     }
 
     /**
