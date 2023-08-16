@@ -1,4 +1,4 @@
-package com.smallworld;
+package com.smallworld.domain;
 
 public class Transaction {
     private int mtn;

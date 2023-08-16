@@ -1,4 +1,4 @@
-package com.smallworld;
+package com.smallworld.data;
 
 import java.io.IOException;
 import java.util.List;

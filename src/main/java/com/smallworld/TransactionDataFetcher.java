@@ -1,7 +1,11 @@
 package com.smallworld;
 
+import com.smallworld.data.IDataReader;
+import com.smallworld.domain.Transaction;
+
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Stream;
 
 
 public class TransactionDataFetcher {
@@ -16,15 +20,19 @@ public class TransactionDataFetcher {
         this.reader.read(Transaction[].class);
     }
 
-    public List<Transaction> getAll() {
-        return this.reader.Data();
+    private Stream<Transaction> getUniques() {
+        Set<Integer> uniqueTransactionMtns = new HashSet<>();
+
+        return this.reader.Data()
+                .stream()
+                .filter(transaction -> uniqueTransactionMtns.add(transaction.getMtn()));
     }
 
     /**
      * Returns the sum of the amounts of all transactions
      */
     public double getTotalTransactionAmount() {
-        return this.reader.Data().stream()
+        return this.getUniques()
                 .mapToDouble(Transaction::getAmount)
                 .sum();
     }
@@ -33,14 +41,20 @@ public class TransactionDataFetcher {
      * Returns the sum of the amounts of all transactions sent by the specified client
      */
     public double getTotalTransactionAmountSentBy(String senderFullName) {
-        throw new UnsupportedOperationException();
+        return this.getUniques()
+                .filter(transaction -> transaction.getSenderFullName() == senderFullName)
+                .mapToDouble(Transaction::getAmount)
+                .sum();
     }
 
     /**
      * Returns the highest transaction amount
      */
     public double getMaxTransactionAmount() {
-        throw new UnsupportedOperationException();
+        return this.getUniques()
+                .mapToDouble(Transaction::getAmount)
+                .max()
+                .orElse(0.0);
     }
 
     /**

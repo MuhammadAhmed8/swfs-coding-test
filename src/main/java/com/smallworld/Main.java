@@ -1,5 +1,8 @@
 package com.smallworld;
 
+import com.smallworld.data.JsonDataReader;
+import com.smallworld.domain.Transaction;
+
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.List;
@@ -10,9 +13,6 @@ public class Main {
             // Provide the path to the transactions.json file
             String jsonFilePath = "transactions.json";
             TransactionDataFetcher dataFetcher = new TransactionDataFetcher(new JsonDataReader<Transaction>(jsonFilePath));
-            List<Transaction> transactions = dataFetcher.getAll();
-
-            transactions.forEach(System.out::println);
             double totalAmount = dataFetcher.getTotalTransactionAmount();
             System.out.println("Total Transaction Amount: " + totalAmount);
 //
