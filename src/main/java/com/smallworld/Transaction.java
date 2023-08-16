@@ -12,6 +12,7 @@ public class Transaction {
     private String issueMessage;
 
     public Transaction(){}
+
     public Transaction(
             int mtn,
             double amount,

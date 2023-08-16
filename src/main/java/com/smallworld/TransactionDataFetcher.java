@@ -1,49 +1,32 @@
 package com.smallworld;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.*;
 
 
 public class TransactionDataFetcher {
+    private IDataReader<Transaction> reader;
 
-    private List<Transaction> transactions;
-
-    public TransactionDataFetcher(String jsonFilePath) throws IOException {
-        loadFromJson(jsonFilePath);
+    public TransactionDataFetcher(IDataReader<Transaction> reader) throws IOException {
+        this.reader = reader;
+        load();
     }
 
-    private void loadFromJson(String jsonFilePath) throws IOException {
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        System.out.println("LOADING DATA...");
-        try {
-            // create object mapper instance
-            ObjectMapper mapper = new ObjectMapper();
-
-            // convert JSON array to list of transactions
-            List<Transaction> transactions = Arrays.asList(mapper.readValue(Paths.get(jsonFilePath).toFile(), Transaction[].class));
-
-            this.transactions = transactions;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+    private void load() throws IOException {
+        this.reader.read(Transaction[].class);
     }
 
     public List<Transaction> getAll() {
-        return this.transactions;
+        return this.reader.Data();
     }
 
     /**
      * Returns the sum of the amounts of all transactions
      */
     public double getTotalTransactionAmount() {
-        throw new UnsupportedOperationException();
+        return this.reader.Data().stream()
+                .mapToDouble(Transaction::getAmount)
+                .sum();
     }
 
     /**

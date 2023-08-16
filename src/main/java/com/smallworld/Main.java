@@ -9,12 +9,12 @@ public class Main {
         try {
             // Provide the path to the transactions.json file
             String jsonFilePath = "transactions.json";
-            TransactionDataFetcher dataFetcher = new TransactionDataFetcher(jsonFilePath);
+            TransactionDataFetcher dataFetcher = new TransactionDataFetcher(new JsonDataReader<Transaction>(jsonFilePath));
             List<Transaction> transactions = dataFetcher.getAll();
 
             transactions.forEach(System.out::println);
-//            double totalAmount = dataFetcher.getTotalTransactionAmount();
-//            System.out.println("Total Transaction Amount: " + totalAmount);
+            double totalAmount = dataFetcher.getTotalTransactionAmount();
+            System.out.println("Total Transaction Amount: " + totalAmount);
 //
 //            double amountSentByAlice = dataFetcher.getTotalTransactionAmountSentBy("Alice");
 //            System.out.println("Total Amount Sent by Alice: " + amountSentByAlice);
