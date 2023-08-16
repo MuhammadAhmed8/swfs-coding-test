@@ -105,4 +105,26 @@ class TransactionDataFetcherTest {
         assertEquals(300.0, maxAmount, 0.001);
     }
 
+    @Test
+    public void testCountUniqueClients_NoTransactions_ReturnsZero() {
+        List<Transaction> mockTransactions = new ArrayList<>();
+        when(mockReader.Data()).thenReturn(mockTransactions);
+
+        long uniqueClients = dataFetcher.countUniqueClients();
+        assertEquals(0, uniqueClients);
+    }
+
+    @Test
+    public void testCountUniqueClients_HasTransactions_ReturnsCorrectCount() {
+        List<Transaction> mockTransactions = new ArrayList<>();
+        mockTransactions.add(new Transaction(1, 100.0, "Sender A", 30, "Receiver X", 25, null, false, null));
+        mockTransactions.add(new Transaction(2, 200.0, "Sender B", 28, "Receiver Y", 27, null, false, null));
+        mockTransactions.add(new Transaction(3, 300.0, "Sender A", 35, "Receiver Z", 40, null, false, null));
+        when(mockReader.Data()).thenReturn(mockTransactions);
+
+        long uniqueClients = dataFetcher.countUniqueClients();
+        assertEquals(5, uniqueClients);
+    }
+
+
 }

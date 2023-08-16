@@ -61,7 +61,10 @@ public class TransactionDataFetcher {
      * Counts the number of unique clients that sent or received a transaction
      */
     public long countUniqueClients() {
-        throw new UnsupportedOperationException();
+        return this.getUniques()
+                .flatMap(transaction -> Stream.of(transaction.getSenderFullName(), transaction.getBeneficiaryFullName()))
+                .distinct()
+                .count();
     }
 
     /**
