@@ -126,5 +126,35 @@ class TransactionDataFetcherTest {
         assertEquals(5, uniqueClients);
     }
 
+    @Test
+    public void testHasOpenComplianceIssues_NoTransactions_ReturnsFalse() {
+        List<Transaction> mockTransactions = new ArrayList<>();
+        when(mockReader.Data()).thenReturn(mockTransactions);
+
+        boolean hasOpenIssues = dataFetcher.hasOpenComplianceIssues("Client A");
+        assertFalse(hasOpenIssues);
+    }
+
+    @Test
+    public void testHasOpenComplianceIssues_ClientHasOpenIssues_ReturnsTrue() {
+        List<Transaction> mockTransactions = new ArrayList<>();
+        // Transaction with an open issue
+        mockTransactions.add(new Transaction(1, 100.0, "Client A", 30, "Receiver X", 25, 1, false, "Unsolved Issue"));
+        when(mockReader.Data()).thenReturn(mockTransactions);
+
+        boolean hasOpenIssues = dataFetcher.hasOpenComplianceIssues("Client A");
+        assertTrue(hasOpenIssues);
+    }
+
+    @Test
+    public void testHasOpenComplianceIssues_ClientHasNoOpenIssues_ReturnsFalse() {
+        List<Transaction> mockTransactions = new ArrayList<>();
+        // Transaction with a solved issue
+        mockTransactions.add(new Transaction(1, 100.0, "Client A", 30, "Receiver X", 25, 1, true, "Solved Issue"));
+        when(mockReader.Data()).thenReturn(mockTransactions);
+
+        boolean hasOpenIssues = dataFetcher.hasOpenComplianceIssues("Client A");
+        assertFalse(hasOpenIssues);
+    }
 
 }

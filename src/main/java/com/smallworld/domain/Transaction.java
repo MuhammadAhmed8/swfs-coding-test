@@ -64,11 +64,16 @@ public class Transaction {
     }
 
     public boolean isIssueSolved() {
-        return issueSolved;
+        return this.getIssueId() != null && issueSolved;
     }
 
     public String getIssueMessage() {
         return issueMessage;
+    }
+
+    public Boolean hasClient(String clientFullName){
+        return this.getSenderFullName().equals(clientFullName)
+                || this.getBeneficiaryFullName().equals(clientFullName);
     }
 
     @Override

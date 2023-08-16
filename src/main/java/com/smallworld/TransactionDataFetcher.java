@@ -72,7 +72,9 @@ public class TransactionDataFetcher {
      * issue that has not been solved
      */
     public boolean hasOpenComplianceIssues(String clientFullName) {
-        throw new UnsupportedOperationException();
+        return this.getUniques()
+                .filter(transaction -> transaction.hasClient(clientFullName))
+                .anyMatch(transaction -> !transaction.isIssueSolved());
     }
 
     /**
