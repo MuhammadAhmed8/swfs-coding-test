@@ -90,7 +90,7 @@ public class TransactionDataFetcher {
      * Returns the identifiers of all open compliance issues
      */
     public Set<Integer> getUnsolvedIssueIds() {
-        return this.reader.Data().stream()
+        return this.getUniques()
                 .filter(transaction -> transaction.hasIssue() && !transaction.isIssueSolved())
                 .map(Transaction::getIssueId)
                 .collect(Collectors.toSet());    }
@@ -99,7 +99,10 @@ public class TransactionDataFetcher {
      * Returns a list of all solved issue messages
      */
     public List<String> getAllSolvedIssueMessages() {
-        throw new UnsupportedOperationException();
+        return this.getUniques()
+                .filter(transaction -> transaction.isIssueSolved())
+                .map(Transaction::getIssueMessage)
+                .toList();
     }
 
     /**

@@ -206,4 +206,30 @@ class TransactionDataFetcherTest {
         assertEquals(expectedIssueIds, unsolvedIssueIds);
     }
 
+    @Test
+    public void testGetAllSolvedIssueMessages_NoTransactions_ReturnsEmptyList() {
+        List<Transaction> mockTransactions = new ArrayList<>();
+        when(mockReader.Data()).thenReturn(mockTransactions);
+
+        List<String> solvedIssueMessages = dataFetcher.getAllSolvedIssueMessages();
+        assertTrue(solvedIssueMessages.isEmpty());
+    }
+
+    @Test
+    public void testGetAllSolvedIssueMessages_HasTransactions_ReturnsList() {
+        List<Transaction> mockTransactions = new ArrayList<>();
+        mockTransactions.add(new Transaction(1, 100.0, "Sender A", 30, "Receiver X", 25, 1, true, "Solved Issue 1"));
+        mockTransactions.add(new Transaction(2, 200.0, "Sender B", 28, "Receiver X", 27, null, false, null));
+        mockTransactions.add(new Transaction(3, 300.0, "Sender A", 35, "Receiver Y", 40, 2, true, "Solved Issue 2"));
+        mockTransactions.add(new Transaction(4, 400.0, "Sender C", 45, "Receiver Z", 50, 3, false, "Unsolved"));
+        when(mockReader.Data()).thenReturn(mockTransactions);
+
+        List<String> solvedIssueMessages = dataFetcher.getAllSolvedIssueMessages();
+        List<String> expectedMessages = new ArrayList<>();
+        expectedMessages.add("Solved Issue 1");
+        expectedMessages.add("Solved Issue 2");
+
+        assertEquals(expectedMessages, solvedIssueMessages);
+    }
+
 }
