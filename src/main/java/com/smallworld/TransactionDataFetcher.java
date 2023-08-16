@@ -90,8 +90,10 @@ public class TransactionDataFetcher {
      * Returns the identifiers of all open compliance issues
      */
     public Set<Integer> getUnsolvedIssueIds() {
-        throw new UnsupportedOperationException();
-    }
+        return this.reader.Data().stream()
+                .filter(transaction -> transaction.hasIssue() && !transaction.isIssueSolved())
+                .map(Transaction::getIssueId)
+                .collect(Collectors.toSet());    }
 
     /**
      * Returns a list of all solved issue messages

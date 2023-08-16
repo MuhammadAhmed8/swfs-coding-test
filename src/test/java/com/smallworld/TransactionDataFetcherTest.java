@@ -6,10 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -183,6 +180,30 @@ class TransactionDataFetcherTest {
         expectedTransactions.put("Receiver Y", mockTransactions.subList(2, 3));
 
         assertEquals(expectedTransactions, transactionsByBeneficiary);
+    }
+
+    @Test
+    public void testGetUnsolvedIssueIds_NoTransactions_ReturnsEmptySet() {
+        List<Transaction> mockTransactions = new ArrayList<>();
+        when(mockReader.Data()).thenReturn(mockTransactions);
+
+        Set<Integer> unsolvedIssueIds = dataFetcher.getUnsolvedIssueIds();
+        assertTrue(unsolvedIssueIds.isEmpty());
+    }
+
+    @Test
+    public void testGetUnsolvedIssueIds_HasTransactions_ReturnsSet() {
+        List<Transaction> mockTransactions = new ArrayList<>();
+        mockTransactions.add(new Transaction(1, 100.0, "Sender A", 30, "Receiver X", 25, 1, false, "Unsolved Issue"));
+        mockTransactions.add(new Transaction(2, 200.0, "Sender B", 28, "Receiver X", 27, null, false, null));
+        mockTransactions.add(new Transaction(3, 300.0, "Sender A", 35, "Receiver Y", 40, 2, true, "Solved Issue"));
+        when(mockReader.Data()).thenReturn(mockTransactions);
+
+        Set<Integer> unsolvedIssueIds = dataFetcher.getUnsolvedIssueIds();
+        Set<Integer> expectedIssueIds = new HashSet<>();
+        expectedIssueIds.add(1);
+
+        assertEquals(expectedIssueIds, unsolvedIssueIds);
     }
 
 }
