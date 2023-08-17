@@ -22,7 +22,7 @@ public class TransactionDataFetcher {
         this.reader.read(Transaction[].class);
     }
 
-    private Stream<Transaction> getUniques() {
+    private Stream<Transaction> getDistinct() {
         Set<Integer> uniqueTransactionMtns = new HashSet<>();
 
         return this.reader.getAll()
@@ -34,7 +34,7 @@ public class TransactionDataFetcher {
      * Returns the sum of the amounts of all transactions
      */
     public double getTotalTransactionAmount() {
-        return this.getUniques()
+        return this.getDistinct()
                 .mapToDouble(Transaction::getAmount)
                 .sum();
     }
@@ -43,7 +43,7 @@ public class TransactionDataFetcher {
      * Returns the sum of the amounts of all transactions sent by the specified client
      */
     public double getTotalTransactionAmountSentBy(String senderFullName) {
-        return this.getUniques()
+        return this.getDistinct()
                 .filter(transaction -> transaction.getSenderFullName() == senderFullName)
                 .mapToDouble(Transaction::getAmount)
                 .sum();
@@ -53,7 +53,7 @@ public class TransactionDataFetcher {
      * Returns the highest transaction amount
      */
     public double getMaxTransactionAmount() {
-        return this.getUniques()
+        return this.getDistinct()
                 .mapToDouble(Transaction::getAmount)
                 .max()
                 .orElse(0.0);
@@ -63,7 +63,7 @@ public class TransactionDataFetcher {
      * Counts the number of unique clients that sent or received a transaction
      */
     public long countUniqueClients() {
-        return this.getUniques()
+        return this.getDistinct()
                 .flatMap(transaction -> Stream.of(transaction.getSenderFullName(), transaction.getBeneficiaryFullName()))
                 .distinct()
                 .count();
@@ -74,7 +74,7 @@ public class TransactionDataFetcher {
      * issue that has not been solved
      */
     public boolean hasOpenComplianceIssues(String clientFullName) {
-        return this.getUniques()
+        return this.getDistinct()
                 .filter(transaction -> transaction.hasClient(clientFullName))
                 .anyMatch(transaction -> !transaction.isIssueSolved());
     }
@@ -83,7 +83,7 @@ public class TransactionDataFetcher {
      * Returns all transactions indexed by beneficiary name
      */
     public Map<String, List<Transaction>> getTransactionsByBeneficiaryName() {
-        return this.getUniques()
+        return this.getDistinct()
                 .collect(Collectors.groupingBy(Transaction::getBeneficiaryFullName));
     }
 
@@ -91,7 +91,7 @@ public class TransactionDataFetcher {
      * Returns the identifiers of all open compliance issues
      */
     public Set<Integer> getUnsolvedIssueIds() {
-        return this.getUniques()
+        return this.getDistinct()
                 .filter(transaction -> transaction.hasIssue() && !transaction.isIssueSolved())
                 .map(Transaction::getIssueId)
                 .collect(Collectors.toSet());    }
@@ -100,7 +100,7 @@ public class TransactionDataFetcher {
      * Returns a list of all solved issue messages
      */
     public List<String> getAllSolvedIssueMessages() {
-        return this.getUniques()
+        return this.getDistinct()
                 .filter(transaction -> transaction.isIssueSolved())
                 .map(Transaction::getIssueMessage)
                 .toList();
@@ -110,7 +110,7 @@ public class TransactionDataFetcher {
      * Returns the 3 transactions with highest amount sorted by amount descending
      */
     public List<Transaction> getTop3TransactionsByAmount() {
-        return this.getUniques()
+        return this.getDistinct()
                 .sorted(Comparator.comparingDouble(Transaction::getAmount).reversed())
                 .limit(3)
                 .collect(Collectors.toList());
@@ -133,7 +133,7 @@ public class TransactionDataFetcher {
     }
 
     private Map<String, Double> getTotalAmountsBySenderFullName() {
-        return this.getUniques()
+        return this.getDistinct()
                 .collect(Collectors.groupingBy(
                         Transaction::getSenderFullName,
                         Collectors.summingDouble(Transaction::getAmount)
