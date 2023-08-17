@@ -3,7 +3,7 @@
 ## Domain Model
 - Created a `Transaction` class to represent transaction data.
 - Included attributes such as MTN, amount, sender name, beneficiary name, issue details, etc.
-- Created a TopSender value object to represent top sender details and to prevent the primitive obsession
+- Created a `TopSender` value object to represent top sender details and to prevent the primitive obsession
 
 ## Data Fetching
 - Implemented a `TransactionDataFetcher` class to manage transaction data.
