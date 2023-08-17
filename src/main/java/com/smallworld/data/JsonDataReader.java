@@ -15,7 +15,7 @@ public class JsonDataReader<T> implements IDataReader<T> {
         this.path = path;
     }
 
-    public List<T> Data() {
+    public List<T> getAll() {
         return data;
     }
 

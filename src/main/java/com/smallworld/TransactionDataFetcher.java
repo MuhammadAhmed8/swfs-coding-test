@@ -1,6 +1,7 @@
 package com.smallworld;
 
 import com.smallworld.data.IDataReader;
+import com.smallworld.domain.TopSender;
 import com.smallworld.domain.Transaction;
 
 import java.io.IOException;
@@ -24,7 +25,7 @@ public class TransactionDataFetcher {
     private Stream<Transaction> getUniques() {
         Set<Integer> uniqueTransactionMtns = new HashSet<>();
 
-        return this.reader.Data()
+        return this.reader.getAll()
                 .stream()
                 .filter(transaction -> uniqueTransactionMtns.add(transaction.getMtn()));
     }
@@ -109,7 +110,7 @@ public class TransactionDataFetcher {
      * Returns the 3 transactions with highest amount sorted by amount descending
      */
     public List<Transaction> getTop3TransactionsByAmount() {
-        return this.reader.Data().stream()
+        return this.getUniques()
                 .sorted(Comparator.comparingDouble(Transaction::getAmount).reversed())
                 .limit(3)
                 .collect(Collectors.toList());
@@ -118,8 +119,25 @@ public class TransactionDataFetcher {
     /**
      * Returns the sender with the most total sent amount
      */
-    public Optional<Object> getTopSender() {
-        throw new UnsupportedOperationException();
+    public Optional<TopSender> getTopSender() {
+
+        Optional<Map.Entry<String, Double>> topSenderEntry = this.getTotalAmountsBySenderFullName()
+                .entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue());
+
+        return Optional.ofNullable(topSenderEntry.map(entry ->
+                new TopSender(entry.getKey(), entry.getValue())
+        ).orElse(null));
+
+    }
+
+    private Map<String, Double> getTotalAmountsBySenderFullName() {
+        return this.getUniques()
+                .collect(Collectors.groupingBy(
+                        Transaction::getSenderFullName,
+                        Collectors.summingDouble(Transaction::getAmount)
+                ));
     }
 
 }
