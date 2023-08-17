@@ -1,5 +1,6 @@
 package com.smallworld;
 
+import com.smallworld.config.Constants;
 import com.smallworld.data.JsonDataReader;
 import com.smallworld.domain.Transaction;
 
@@ -21,7 +22,7 @@ public class SmallWorldApp {
 
             System.out.println("Number of Unique Clients: " + transactionDataFetcher.countUniqueClients());
 
-            String clientFullName = "Sender A"; // Replace with an actual client full name
+            String clientFullName = "Tom Shelby"; // Replace with an actual client full name
             System.out.println("Has Open Compliance Issues for " + clientFullName + ": " + transactionDataFetcher.hasOpenComplianceIssues(clientFullName));
 
             System.out.println("Unsolved Issue IDs: " + transactionDataFetcher.getUnsolvedIssueIds());

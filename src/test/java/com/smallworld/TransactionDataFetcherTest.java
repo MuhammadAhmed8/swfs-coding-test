@@ -119,6 +119,7 @@ class TransactionDataFetcherTest {
         List<Transaction> mockTransactions = new ArrayList<>();
         mockTransactions.add(new Transaction(1, 100.0, "Sender A", 30, "Receiver X", 25, null, false, null));
         mockTransactions.add(new Transaction(2, 200.0, "Sender B", 28, "Receiver Y", 27, null, false, null));
+        mockTransactions.add(new Transaction(2, 200.0, "Sender B", 28, "Receiver Y", 27, null, false, null));
         mockTransactions.add(new Transaction(3, 300.0, "Sender A", 35, "Receiver Z", 40, null, false, null));
         when(dataFetcher.getAll()).thenReturn(mockTransactions);
 
@@ -151,6 +152,10 @@ class TransactionDataFetcherTest {
         List<Transaction> mockTransactions = new ArrayList<>();
         // Transaction with a solved issue
         mockTransactions.add(new Transaction(1, 100.0, "Client A", 30, "Receiver X", 25, 1, true, "Solved Issue"));
+
+        // when issueSolved is false, but issueId is null
+        mockTransactions.add(new Transaction(1, 100.0, "Client A", 30, "Receiver X", 25, null, false, null));
+
         when(dataFetcher.getAll()).thenReturn(mockTransactions);
 
         boolean hasOpenIssues = dataFetcher.hasOpenComplianceIssues("Client A");

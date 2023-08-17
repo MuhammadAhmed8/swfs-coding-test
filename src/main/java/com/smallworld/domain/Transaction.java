@@ -35,6 +35,10 @@ public class Transaction {
         this.issueMessage = issueMessage;
     }
 
+    public boolean hasOpenIssue() {
+        return hasIssue() && !isIssueSolved();
+    }
+
     public int getMtn() {
         return mtn;
     }
@@ -67,7 +71,7 @@ public class Transaction {
         return this.getIssueId() != null;
     }
     public Boolean isIssueSolved() {
-        return this.getIssueId() != null && issueSolved == true;
+        return issueSolved;
     }
 
     public String getIssueMessage() {

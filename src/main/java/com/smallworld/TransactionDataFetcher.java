@@ -80,9 +80,10 @@ public class TransactionDataFetcher {
      * issue that has not been solved
      */
     public boolean hasOpenComplianceIssues(String clientFullName) {
-        return this.getDistinct()
+        return this.getAll()
+                .stream()
                 .filter(transaction -> transaction.hasClient(clientFullName))
-                .anyMatch(transaction -> !transaction.isIssueSolved());
+                .anyMatch(transaction -> transaction.hasOpenIssue());
     }
 
     /**
@@ -97,8 +98,9 @@ public class TransactionDataFetcher {
      * Returns the identifiers of all open compliance issues
      */
     public Set<Integer> getUnsolvedIssueIds() {
-        return this.getDistinct()
-                .filter(transaction -> transaction.hasIssue() && !transaction.isIssueSolved())
+        return this.getAll()
+                .stream()
+                .filter(transaction -> transaction.hasOpenIssue())
                 .map(Transaction::getIssueId)
                 .collect(Collectors.toSet());    }
 
@@ -106,8 +108,9 @@ public class TransactionDataFetcher {
      * Returns a list of all solved issue messages
      */
     public List<String> getAllSolvedIssueMessages() {
-        return this.getDistinct()
-                .filter(transaction -> transaction.isIssueSolved())
+        return this.getAll()
+                .stream()
+                .filter(transaction -> transaction.hasIssue() && transaction.isIssueSolved())
                 .map(Transaction::getIssueMessage)
                 .toList();
     }
