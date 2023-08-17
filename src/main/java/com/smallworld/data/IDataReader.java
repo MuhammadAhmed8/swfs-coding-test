@@ -6,5 +6,5 @@ import java.util.List;
 public interface IDataReader<T> {
     IDataReader read(Class<T[]> value) throws IOException;
 
-    List<T> getAll();
+    List<T> getAll(Class<T[]> value) throws IOException;
 }

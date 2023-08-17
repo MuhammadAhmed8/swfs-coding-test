@@ -15,8 +15,12 @@ public class JsonDataReader<T> implements IDataReader<T> {
         this.path = path;
     }
 
-    public List<T> getAll() {
-        return data;
+    public List<T> getAll(Class<T[]> value) throws IOException {
+        if(this.data == null || this.data.isEmpty()){
+            this.read(value);
+        }
+
+        return this.data;
     }
 
     public JsonDataReader<T> read(Class<T[]> value) throws IOException {

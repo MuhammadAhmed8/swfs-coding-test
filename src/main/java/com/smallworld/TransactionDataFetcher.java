@@ -15,19 +15,25 @@ public class TransactionDataFetcher {
 
     public TransactionDataFetcher(IDataReader<Transaction> reader) throws IOException {
         this.reader = reader;
-        load();
     }
 
-    private void load() throws IOException {
-        this.reader.read(Transaction[].class);
+    public List<Transaction> getAll() {
+        try {
+            return this.reader.getAll(Transaction[].class);
+        }
+        catch (IOException e){
+            System.err.println("Error loading data from JSON file: " + e.getMessage());
+        }
+
+        return null;
     }
 
     private Stream<Transaction> getDistinct() {
-        Set<Integer> uniqueTransactionMtns = new HashSet<>();
+            Set<Integer> uniqueTransactionMtns = new HashSet<>();
 
-        return this.reader.getAll()
-                .stream()
-                .filter(transaction -> uniqueTransactionMtns.add(transaction.getMtn()));
+            return this.getAll()
+                    .stream()
+                    .filter(transaction -> uniqueTransactionMtns.add(transaction.getMtn()));
     }
 
     /**
@@ -44,7 +50,7 @@ public class TransactionDataFetcher {
      */
     public double getTotalTransactionAmountSentBy(String senderFullName) {
         return this.getDistinct()
-                .filter(transaction -> transaction.getSenderFullName() == senderFullName)
+                .filter(transaction -> senderFullName.equals(transaction.getSenderFullName()))
                 .mapToDouble(Transaction::getAmount)
                 .sum();
     }
