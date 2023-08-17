@@ -1,4 +1,4 @@
-package com.smallworld.data;
+package com.smallworld.infra;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

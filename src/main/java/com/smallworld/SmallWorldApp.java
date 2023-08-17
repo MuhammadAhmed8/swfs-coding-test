@@ -1,7 +1,7 @@
 package com.smallworld;
 
 import com.smallworld.config.Constants;
-import com.smallworld.data.JsonDataReader;
+import com.smallworld.infra.JsonDataReader;
 import com.smallworld.domain.Transaction;
 
 import java.io.IOException;

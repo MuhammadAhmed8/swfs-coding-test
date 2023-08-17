@@ -1,6 +1,6 @@
 package com.smallworld;
 
-import com.smallworld.data.IDataReader;
+import com.smallworld.infra.IDataReader;
 import com.smallworld.domain.TopSender;
 import com.smallworld.domain.Transaction;
 
